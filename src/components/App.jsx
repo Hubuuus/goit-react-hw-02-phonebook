@@ -1,5 +1,4 @@
 import { Component } from "react";
-import { nanoid } from "nanoid";
 import { PropTypes } from "prop-types";
 import { ContactForm } from "./ContactForm/ContactForm";
 import { Filter } from "./Filter/Filter";
@@ -18,40 +17,19 @@ export class App extends Component {
     filter: "",
   };
 
-  handleChange = evt => {
-    //przypisuje dane odpowiednio do state.contacts
-    const { name, value } = evt.target;
-    this.setState({ [name]: value });
+  updateContact = contact => {
+    //aktualizuje state.contacts
+    this.searchContacts(this.state.contacts, contact.name) == 0
+      ? this.setState(prevState => ({
+          contacts: [...prevState.contacts, contact],
+        }))
+      : alert(`${contact.name} is already in contacts`);
   };
 
-  addContact = evt => {
-    evt.preventDefault();
-    const { name, number, contacts } = this.state;
-
-    const contact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
-
-    //sprawdzanie i przypisanie contact do state contacts
-    {
-      this.searchContacts(contacts, name) == 0
-        ? this.setState(prevState => ({
-            contacts: [...prevState.contacts, contact],
-          }))
-        : alert(`${name} is already in contacts`);
-    }
-
-    //reset fomularza
-    const form = evt.currentTarget;
-    form.reset();
-  };
-
-  deleteContact =  (id) => {
-    this.setState((prevState) => ({
-      contacts: prevState.contacts.filter((contact) => contact.id !== id),
-  }));
+  deleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
   };
 
   searchChange = evt => {
@@ -61,7 +39,6 @@ export class App extends Component {
   searchContacts = (arr, el) => {
     //dzięki temu podczas wyszukiwania nie martwimy się o duże litery
     const normalizedCase = el.toLowerCase();
-
     //wuszukanie z contacts
     return arr.filter(contact => contact.name.toLowerCase().includes(normalizedCase));
   };
@@ -72,7 +49,11 @@ export class App extends Component {
     return (
       <div className={css.App}>
         <h1 className={css.App_h1}>Phonebook</h1>
-        <ContactForm addContact={this.addContact} handleChange={this.handleChange} />
+        <ContactForm
+          updateContact={this.updateContact}
+          contacts={contacts}
+          searchContacts={this.searchContacts}
+        />
         <h2 className={css.App_h2}>Contact</h2>
         <Filter searchChange={this.searchChange} />
         <ContactList contacts={contacts} filtered={filtered} deleteContact={this.deleteContact} />
