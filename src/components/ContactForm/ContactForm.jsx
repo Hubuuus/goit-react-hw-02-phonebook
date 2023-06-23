@@ -19,7 +19,7 @@ export class ContactForm extends Component {
     evt.preventDefault();
 
     const { name, number } = this.state;
-    const { updateContact} = this.props;
+    const { updateContact } = this.props;
 
     const contact = {
       id: nanoid(),
@@ -30,11 +30,11 @@ export class ContactForm extends Component {
     updateContact(contact);
 
     //reset fomularza
-    const form = evt.currentTarget;
-    form.reset();
+    this.setState({ name: "", number: "" });
   };
 
   render() {
+    const { name, number } = this.state;
     return (
       <form className={css.Form} onSubmit={this.addContact}>
         <h3 className={css.Form_h3}>Name</h3>
@@ -42,6 +42,7 @@ export class ContactForm extends Component {
           className={css.Form_input}
           onChange={this.handleChange}
           type='text'
+          value={name}
           name='name'
           pattern="^[a-zA-Za-яА-Я]+(([' -][a-zA-Za-яА-Я ])?[a-zA-Za-яА-Я]*)*$"
           title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
@@ -53,6 +54,7 @@ export class ContactForm extends Component {
           className={css.Form_input}
           onChange={this.handleChange}
           type='tel'
+          value={number}
           name='number'
           pattern='\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}'
           title='Phone number must be digits and can contain spaces, dashes, parentheses and can start with +'
